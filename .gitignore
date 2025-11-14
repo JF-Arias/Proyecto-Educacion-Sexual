@@ -1,0 +1,30 @@
+# 📦 Node modules (NO se suben al repo)
+**/node_modules
+
+# 🧱 Builds de frontend y backend
+**/dist
+**/build
+
+# 🔐 Archivos de configuración sensible
+*.env
+.env
+.env.*
+.env.local
+
+# 🧪 Cobertura de tests
+coverage
+**/coverage
+
+# 💻 Archivos del editor / sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
