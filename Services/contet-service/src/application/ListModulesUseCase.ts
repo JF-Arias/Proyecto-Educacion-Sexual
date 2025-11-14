@@ -1,10 +1,10 @@
-
+// src/application/ListModulesUseCase.ts
 import type { ModuleRepository } from '../domain/modulerepository.js';
 
-export class GetModuleDetailUseCase {
+export class ListModulesUseCase {
   constructor(private moduleRepo: ModuleRepository) {}
 
-  async execute(id: string) {
-    return this.moduleRepo.findById(id);
+  async execute() {
+    return this.moduleRepo.findAll();
   }
 }

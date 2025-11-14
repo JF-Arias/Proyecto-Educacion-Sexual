@@ -13,6 +13,7 @@ export function createServer() {
     res.json({ status: 'ok', service: 'content-service' });
   });
 
+  // 👇 ESTA LÍNEA ES LA CLAVE PARA /modules
   app.use('/modules', modulesRouter);
 
   return app;
