@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//  MODELOS PRINCIPALES DEL MICROSERVICIO DE CONTENIDOS
+//
+
+//--------------------------------------------------------
+// 1️⃣ CURSOS
+//--------------------------------------------------------
+model Course {
+  id           String    @id @default(uuid())
+  title        String
+  description  String?
+  imageUrl     String?
+  createdAt    DateTime  @default(now())
+
+  // un curso tiene muchos módulos
+  modules      Module[]
+}
+
+//--------------------------------------------------------
+// 2️⃣ MÓDULOS
+//--------------------------------------------------------
+model Module {
+  id                String    @id @default(uuid())
+  title             String
+  description       String?
+  estimatedDuration Int?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // relación con Curso
+  courseId          String
+  course            Course    @relation(fields: [courseId], references: [id])
+
+  // un módulo tiene muchas lecciones
+  lessons           Lesson[]
+
+  // registro de progreso
+  progress          UserProgress[]
+}
+
+//--------------------------------------------------------
+// 3️⃣ LECCIONES
+//--------------------------------------------------------
+model Lesson {
+  id        String   @id @default(uuid())
+  title     String
+  content   String   // aquí va texto HTML o Markdown
+  videoUrl  String?
+  createdAt DateTime @default(now())
+
+  // relación con módulo
+  moduleId  String
+  module    Module   @relation(fields: [moduleId], references: [id])
+}
+
+//--------------------------------------------------------
+// 4️⃣ PROGRESO DE USUARIO
+//--------------------------------------------------------
+model UserProgress {
+  id         String   @id @default(uuid())
+  userId     String   // viene del auth-service (usuario)
+  moduleId   String
+  completed  Boolean  @default(false)
+  completedAt DateTime?
+
+  module     Module   @relation(fields: [moduleId], references: [id])
+}

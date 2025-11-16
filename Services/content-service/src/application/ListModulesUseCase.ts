@@ -1,5 +1,5 @@
 // src/application/ListModulesUseCase.ts
-import type { ModuleRepository } from '../domain/modulerepository.js';
+import type { ModuleRepository } from '../domain/ModuleRepository.js';
 
 export class ListModulesUseCase {
   constructor(private moduleRepo: ModuleRepository) {}

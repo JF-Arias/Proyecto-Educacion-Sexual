@@ -1,5 +1,5 @@
 // src/domain/ModuleRepository.ts
-import type { Module } from './module.js';
+import type { Module } from './Module.js';
 
 export interface ModuleRepository {
   findAll(): Promise<Module[]>;

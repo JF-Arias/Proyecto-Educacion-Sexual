@@ -1,6 +1,6 @@
 // src/infrastructure/InMemoryModuleRepository.ts
-import type { ModuleRepository } from '../domain/modulerepository.js';
-import type { Module } from '../domain/module.js';
+import type { ModuleRepository } from '../domain/ModuleRepository.js';
+import type { Module } from '../domain/Module.js';
 
 const MOCK_MODULES: Module[] = [
   {
