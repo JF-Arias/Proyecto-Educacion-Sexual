@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserProfile {
+  id             String        @id @db.Uuid
+  firstName      String?       @map("first_name")
+  lastName       String?       @map("last_name")
+  email          String        @unique
+  birthDate      DateTime?     @map("birth_date")
+  gender         String?
+  profilePicture String?       @map("profile_picture")
+  bio            String?
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @default(now()) @map("updated_at")
+
+  roles          UserRole[]
+  preferences    Preference?
+  settings       UserSetting?
+  logs           AuditLog[]
+
+  @@map("user_profiles")
+}
+
+model Role {
+  id          String      @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  name        String      @unique
+  description String?
+
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id        String      @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  userId    String      @db.Uuid @map("user_id")
+  roleId    String      @db.Uuid @map("role_id")
+  assignedAt DateTime   @default(now()) @map("assigned_at")
+
+  user      UserProfile @relation(fields: [userId], references: [id])
+  role      Role        @relation(fields: [roleId], references: [id])
+
+  @@map("user_roles")
+}
+
+model Preference {
+  id            String      @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  userId        String      @db.Uuid @map("user_id")
+  theme         String?     @default("light")
+  language      String?     @default("es")
+  notifications Boolean?    @default(true)
+
+  user          UserProfile @relation(fields: [userId], references: [id])
+
+  @@map("preferences")
+}
+
+model UserSetting {
+  id                 String      @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  userId             String      @db.Uuid @map("user_id")
+  isPrivate          Boolean?    @default(false) @map("is_private")
+  allowDataProcessing Boolean?   @default(true) @map("allow_data_processing")
+  blocked            Boolean?    @default(false)
+  createdAt          DateTime    @default(now()) @map("created_at")
+
+  user               UserProfile @relation(fields: [userId], references: [id])
+
+  @@map("user_settings")
+}
+
+model AuditLog {
+  id        String       @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  userId    String?      @db.Uuid @map("user_id")
+  action    String
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  user      UserProfile? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
