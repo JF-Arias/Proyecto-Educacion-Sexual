@@ -1,51 +1,24 @@
 import express from "express";
-import "dotenv/config";
-
-import { InMemoryUserRepository } from "./infrastructure/repositories/InMemoryUserRepository";
-import { BcryptPasswordService } from "./infrastructure/hashing/BcryptPasswordService";
-import { UuidGenerator } from "./infrastructure/id/UuidGenerator";
-import { JWTTokenService } from "./infrastructure/tokens/JWTTokenService";
-
-import { RegisterUserUseCase } from "./application/RegisterUserUseCase";
-import { LoginUserUseCase } from "./application/LoginUserUseCase";
-
-import { AuthController } from "./presentation/AuthController";
-import { createAuthRouter } from "./presentation/routes/auth.routes";
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
+const prisma = new PrismaClient();
+
 app.use(express.json());
 
-const PORT = process.env.PORT || 3001;
-
-// ----- Infraestructura -----
-const userRepository = new InMemoryUserRepository();
-const passwordService = new BcryptPasswordService();
-const uuidGenerator = new UuidGenerator();
-const tokenService = new JWTTokenService(process.env.JWT_SECRET || "super-secret");
-
-// ----- Casos de uso -----
-const registerUserUseCase = new RegisterUserUseCase(
-  userRepository,
-  passwordService,
-  uuidGenerator
-);
-
-const loginUserUseCase = new LoginUserUseCase(
-  userRepository,
-  passwordService,
-  tokenService
-);
-
-// ----- Controlador -----
-const authController = new AuthController(
-  registerUserUseCase,
-  loginUserUseCase
-);
-
-// ----- Rutas -----
-app.use("/auth", createAuthRouter(authController));
-
-// ----- Servidor -----
-app.listen(PORT, () => {
-  console.log(`🚀 Auth-service escuchando en http://localhost:${PORT}`);
+// --- Test endpoint ---
+app.get("/health", (req, res) => {
+  res.send("Auth-service is running");
 });
+
+app.listen(process.env.PORT, async () => {
+  console.log(`🚀 Auth-service corriendo en puerto ${process.env.PORT}`);
+
+  try {
+    await prisma.$connect();
+    console.log("✅ Conectado correctamente a PostgreSQL Azure");
+  } catch (err) {
+    console.error("❌ Error conectando a la BD:", err);
+  }
+});
+
