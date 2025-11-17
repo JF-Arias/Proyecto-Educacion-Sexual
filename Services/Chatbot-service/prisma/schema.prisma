@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model KnowledgeBase {
+  id        String   @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  category  String
+  question  String
+  answer    String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("knowledge_base")
+}
+
+model ContextSession {
+  id           String   @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  sessionKey   String   @map("session_key")
+  userId       String?  @db.Uuid @map("user_id")
+  lastActivity DateTime @default(now()) @map("last_activity")
+  context      Json?
+
+  messages     Message[]
+
+  @@map("context_sessions")
+}
+
+model Message {
+  id        String   @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  sessionId String   @db.Uuid @map("session_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  session   ContextSession @relation(fields: [sessionId], references: [id])
+  response  ChatbotResponse?
+
+  @@map("messages")
+}
+
+model ChatbotResponse {
+  id        String   @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  messageId String   @db.Uuid @map("message_id") @unique
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  message   Message  @relation(fields: [messageId], references: [id])
+
+  @@map("chatbot_responses")
+}
+
+model Interaction {
+  id        String   @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  userInput String   @map("user_input")
+  botOutput String   @map("bot_output")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("interactions")
+}
