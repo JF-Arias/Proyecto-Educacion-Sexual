@@ -1,11 +1,16 @@
 import { Router } from "express";
 import { AuthController } from "../AuthController";
 
-export const createAuthRouter = (controller: AuthController): Router => {
-  const router = Router();
+const router = Router();
 
-  router.post("/register", controller.register);
-  router.post("/login", controller.login);
+// Dependencias serán inyectadas en main.ts
+let controller: AuthController;
 
-  return router;
-};
+export function setAuthController(ctrl: AuthController) {
+  controller = ctrl;
+}
+
+router.post("/register", (req, res) => controller.register(req, res));
+router.post("/login", (req, res) => controller.login(req, res));
+
+export default router;

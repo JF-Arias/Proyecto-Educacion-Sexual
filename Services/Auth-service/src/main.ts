@@ -1,24 +1,48 @@
-import express from "express";
-import { PrismaClient } from "@prisma/client";
+import { ApiGateway } from "./infrastructure/http/ApiGateway";
 
-const app = express();
-const prisma = new PrismaClient();
+import { RegisterUserUseCase } from "./application/RegisterUserUseCase";
+import { LoginUserUseCase } from "./application/LoginUserUseCase";
 
-app.use(express.json());
+import { PostgresUserRepository } from "./infrastructure/repositories/PostgresUserRepository";
+import { BcryptPasswordService } from "./infrastructure/hashing/BcryptPasswordService";
+import { JWTTokenService } from "./infrastructure/tokens/JWTTokenService";
 
-// --- Test endpoint ---
-app.get("/health", (req, res) => {
-  res.send("Auth-service is running");
-});
+import { AuthController } from "./presentation/AuthController";
+import { setAuthController } from "./presentation/routes/auth.routes";
 
-app.listen(process.env.PORT, async () => {
-  console.log(`🚀 Auth-service corriendo en puerto ${process.env.PORT}`);
+// 🔥 Este es el repositorio real (Postgres), NO el in-memory
+const userRepository = new PostgresUserRepository();
 
-  try {
-    await prisma.$connect();
-    console.log("✅ Conectado correctamente a PostgreSQL Azure");
-  } catch (err) {
-    console.error("❌ Error conectando a la BD:", err);
-  }
-});
+// Hash y token services
+const hashService = new BcryptPasswordService();
+const tokenService = new JWTTokenService("secret123");
 
+// Generador de IDs
+const idGenerator = { generate: () => crypto.randomUUID() };
+
+// Casos de uso
+const registerUserUseCase = new RegisterUserUseCase(
+  userRepository,
+  hashService,
+  idGenerator
+);
+
+const loginUserUseCase = new LoginUserUseCase(
+  userRepository,
+  hashService,
+  tokenService
+);
+
+// Controlador
+const authController = new AuthController(
+  registerUserUseCase,
+  loginUserUseCase
+);
+
+// Conectar controlador con router
+setAuthController(authController);
+
+// API Gateway
+const api = new ApiGateway();
+api.registerRoutes();
+api.start(3000);

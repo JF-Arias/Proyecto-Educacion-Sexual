@@ -8,40 +8,37 @@ datasource db {
 }
 
 model User {
-  id            String           @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
-  name          String
-  email         String           @unique
-  passwordHash  String           @map("password_hash")
-  role          String           @default("USER")
-  isActive      Boolean          @default(true) @map("is_active")
-  createdAt     DateTime         @default(now()) @map("created_at")
-  updatedAt     DateTime         @default(now()) @map("updated_at")
-
-  refreshTokens RefreshToken[]
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  email          String          @unique
+  passwordHash   String          @map("password_hash")
+  role           String          @default("USER")
+  isActive       Boolean         @default(true) @map("is_active")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @default(now()) @map("updated_at")
   failedAttempts FailedAttempt[]
+  refreshTokens  RefreshToken[]
 
   @@map("users")
 }
 
 model RefreshToken {
-  id          String     @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
-  token       String
-  userId      String     @map("user_id") @db.Uuid
-  createdAt   DateTime   @default(now()) @map("created_at")
-  revoked     Boolean    @default(false)
-
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  token     String
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  revoked   Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
 }
 
 model FailedAttempt {
-  id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
-  userId    String    @map("user_id") @db.Uuid
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
   ip        String?
-  createdAt DateTime  @default(now()) @map("created_at")
-
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("failed_attempts")
 }

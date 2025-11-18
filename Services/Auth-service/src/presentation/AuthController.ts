@@ -8,46 +8,21 @@ export class AuthController {
     private readonly loginUserUseCase: LoginUserUseCase
   ) {}
 
-  register = async (req: Request, res: Response) => {
+  async register(req: Request, res: Response) {
     try {
-      const { name, email, password, role } = req.body;
-
-      const user = await this.registerUserUseCase.execute({
-        name,
-        email,
-        password,
-        role,
-      });
-
-      return res.status(201).json({
-        message: "Usuario creado correctamente",
-        user,
-      });
-
-    } catch (error: any) {
-      console.error(error);
-      return res.status(400).json({
-        error: error.message ?? "Error al registrar usuario",
-      });
+      const output = await this.registerUserUseCase.execute(req.body);
+      res.status(201).json(output);
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
     }
-  };
+  }
 
-  login = async (req: Request, res: Response) => {
+  async login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body;
-
-      const result = await this.loginUserUseCase.execute({ email, password });
-
-      return res.status(200).json({
-        message: "Inicio de sesión correcto",
-        user: result.user,
-        token: result.token,
-      });
-
-    } catch (error: any) {
-      return res.status(401).json({
-        error: error.message ?? "Credenciales inválidas",
-      });
+      const result = await this.loginUserUseCase.execute(req.body);
+      res.status(200).json(result);
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
     }
-  };
+  }
 }
