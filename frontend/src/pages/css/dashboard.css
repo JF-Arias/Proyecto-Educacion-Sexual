@@ -1,0 +1,156 @@
+/* DASHBOARD LAYOUT */
+.dashboard-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  position: relative;
+  overflow-y: auto; /* permite scroll */
+}
+
+
+/* Contenedor general */
+.dashboard-container {
+  display: flex;
+  width: 100%;
+  z-index: 2;
+}
+
+/* SIDEBAR */
+.dashboard-sidebar {
+  width: 260px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  padding: 30px 20px;
+  border-right: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 4px 0px 20px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 3px solid rgba(240, 206, 170, 0.4);
+}
+
+.user-info h3 {
+  color: #8b6655;
+  font-size: 1.2rem;
+}
+
+.user-info p {
+  color: rgba(139, 102, 85, 0.6);
+  font-size: 0.85rem;
+}
+
+.sidebar-btn {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 12px;
+  border: none;
+  background: #f0ceaa;
+  color: #734d39;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.sidebar-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* MENU */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar-menu button {
+  background: none;
+  border: none;
+  padding: 10px 0;
+  color: #734d39;
+  text-align: left;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.sidebar-menu button:hover {
+  background: rgba(240, 206, 170, 0.25);
+  padding-left: 10px;
+}
+
+/* CONTENIDO CENTRAL */
+.dashboard-content {
+  flex: 1;
+  padding: 40px 70px;
+  overflow-y: visible; /* deja fluir el contenido */
+}
+
+.section {
+  margin-bottom: 60px;
+}
+
+.section-title {
+  color: #8b6655;
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+}
+
+.section-text {
+  color: rgba(100, 80, 60, 0.8);
+  font-size: 1.1rem;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.section-image {
+  width: 160px;
+  margin: 20px 0;
+  animation: floatSoft 6s ease-in-out infinite;
+}
+
+/* CONTACTO */
+.contact-box p {
+  color: rgba(100, 80, 60, 0.9);
+  margin: 5px 0;
+}
+
+.social-icons {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: rgba(139,102,85,0.7);
+  transition: 0.3s;
+}
+
+.social-icons a:hover {
+  color: #8b6655;
+}
+
+/* Animación */
+@keyframes floatSoft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.soft-background {
+  pointer-events: none; /* evita bloquear scroll */
+}
+
